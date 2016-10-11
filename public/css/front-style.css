@@ -72,3 +72,11 @@ label {
     border-radius: 12px;
     color: #db2b3a;    
 }
+
+.progress img {
+    vertical-align: middle;
+    margin-right: 15px;
+}
+.progress span {
+    font-size: 20px;
+}

@@ -1,5 +1,7 @@
 /node_modules
 /public/storage
+/public/sliders
+/storage/home
 /vendor
 /.idea
 Homestead.json

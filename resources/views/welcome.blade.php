@@ -16,7 +16,34 @@
         <input type="file" name="pdf" style="display:none;"/>
         <button type="submit">Отправить</button>
     </form>
+    <p class="progress" style="display:none;"><img src="{{ url('/images/ajax-loader.gif') }}"/><span></span></p>
 @endsection
 
+@section('footer-scripts')
+    <script>
+        $(function() {
+            /* add point for making slider folder */
+            var sliderPrefix;
+            $('form').submit(function(e){
+                sliderPrefix = new Date().getTime();
+                $(this).append("<input type='hidden' name='time' value='" + sliderPrefix +"' />");
+                setInterval('getProgress(' + sliderPrefix + ')', 5000);
+                $('p.progress').show();
+                return;
+            });
+        });
+
+        function getProgress(sliderPrefix){            
+            $.ajax({
+                url: "progress/" + sliderPrefix,
+                method: "GET",
+
+                success: function(data){
+                    $('p.progress').find('span').text(data.stage);
+                },
+            });
+        }
+    </script>
+@endsection
 
 

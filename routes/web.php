@@ -13,6 +13,7 @@
 
 Route::get('/', 'MainPageController@index');
 Route::post('/', 'MainPageController@createSlider');
+Route::get('/progress/{sliderPrefix}', 'MainPageController@progressCreateSlider')->middleware('ajax');
 
 Auth::routes();
 

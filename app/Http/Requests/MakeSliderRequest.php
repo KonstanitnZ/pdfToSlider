@@ -24,7 +24,7 @@ class MakeSliderRequest extends FormRequest
     public function rules()
     {
         return [
-            'pdf'=>'file|required|mimes:pdf|max:10240'
+            'pdf'=>'required|mimes:pdf|max:10240'
         ];
     }
 
