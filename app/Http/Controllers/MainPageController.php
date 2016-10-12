@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MakeSliderRequest;
 use Illuminate\Support\Facades\Storage;
-use Validator;
+use Illuminate\Support\Facades\File;
 
 class MainPageController extends Controller
 {
@@ -18,24 +18,26 @@ class MainPageController extends Controller
     public function createSlider(MakeSliderRequest $request)
     {
         if ($request->pdf->isValid()) {
-            // 'time' is used for showing progress in browser and make folder for slider
-            $folderName = 'slider_' . $request->time;
+            // 'sliderPrefix' is used for showing progress in browser and make folder for slider
+            $prefix = $request->sliderPrefix;
+            $folderName = 'slider_' . $request->sliderPrefix;
             $sliderRootDir = 'temporaly/' . $folderName;
-            $sliderImageDir = 'temporaly/' . $folderName . '/images';
+            $urlForPdf = public_path() . '/sliders/' . $sliderRootDir . '/slider.pdf';
+            $urlForImages = public_path() . '/sliders/temporaly/' . $folderName . '/download/img/';
 
             Storage::disk('sliders')->makeDirectory($sliderRootDir, 0777); 
-            Storage::disk('sliders')->makeDirectory($sliderImageDir, 0777); // folder for slider images
+            
+            // copy slider repo for downloading
+            File::copyDirectory(public_path() . '/sliders/slider_repo', public_path() . '/sliders/' . $sliderRootDir . '/download');
 
             // inform that working in progress
             $progressFileUrl =  $sliderRootDir . '/progress.txt';
             Storage::disk('sliders')->put($progressFileUrl, 'Подготовка к обработке файла...');
 
+            // save original pdf file
             $request->pdf->storeAs('temporaly/' . $folderName, 'slider.pdf' , 'sliders');
-
-            $url = public_path() . '/sliders/' . $sliderRootDir . '/slider.pdf';
-            $urlForImages = public_path() . '/sliders/' . $sliderImageDir . '/';
-            
-            $pdf = app('Pdf', ['pathToFile' => $url]); // create images from pdf
+           
+            $pdf = app('Pdf', ['pathToFile' => $urlForPdf]); // create images from pdf
             $numberOfPages = $pdf->getNumberOfPages();
 
             // max 20 pages
@@ -48,12 +50,17 @@ class MainPageController extends Controller
 
                $pdf->setPage($i)
                     ->saveImage($urlForImages . $i . '.jpg');
-            }
+            };
+
+            // go to see slider
+            return redirect()->route('slider', ['sliderPrefix' => $prefix]);
 
         }
     	
-    	return view('welcome');
+        
     }
+
+
 
     // get infomation about progress for browser (AJAX request required)
     public function progressCreateSlider($sliderPrefix) {

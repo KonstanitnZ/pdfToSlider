@@ -13,7 +13,7 @@ html, body {
 
 .flex-center {
     align-items: center;
-    display: flex;
+    /*display: flex;*/
     justify-content: center;
 }
 
@@ -28,6 +28,7 @@ html, body {
 }
 
 .content {
+    padding-top: 100px;
     text-align: center;
 }
 
@@ -46,9 +47,10 @@ html, body {
 }
 
 .m-b-md {
+    margin-top:100px;
     margin-bottom: 30px;
 }
-#upload_trigger, button[type=submit] {
+#upload_trigger, button[type=submit], .downloadAndTestApiButtons a {
     padding: 8px 13px;                
     background: #F4BF42;
     border: 1px solid #F4BF42;
@@ -57,7 +59,7 @@ html, body {
     color: #000;
     cursor: pointer;
 }
-#upload_trigger:hover, button[type=submit]:hover {
+#upload_trigger:hover, button[type=submit]:hover, .downloadAndTestApiButtons a:hover {
     background: none;                
 }
 label {
@@ -79,4 +81,32 @@ label {
 }
 .progress span {
     font-size: 20px;
+}
+.downloadAndTestApiButtons {
+    margin-bottom: 20px;
+}
+.downloadAndTestApiButtons a {
+    text-decoration: none;
+}
+
+/* API answer block on slider/{sliderPrefix} page*/
+
+#apiAnswer {
+    margin: 20px 0;
+}
+#apiAnswer .hrefList, #apiAnswer .imagesList  {
+    padding: 20px 0;
+}
+#apiAnswer .hrefList a {
+    display: block;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+#apiAnswer .hrefList a:hover {
+    text-decoration: underline;
+}
+#apiAnswer .imagesList img {
+    display: inline-block;
+    max-width: 200px;
 }

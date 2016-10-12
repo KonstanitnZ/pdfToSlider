@@ -26,7 +26,7 @@
             var sliderPrefix;
             $('form').submit(function(e){
                 sliderPrefix = new Date().getTime();
-                $(this).append("<input type='hidden' name='time' value='" + sliderPrefix +"' />");
+                $(this).append("<input type='hidden' name='sliderPrefix' value='" + sliderPrefix +"' />");
                 setInterval('getProgress(' + sliderPrefix + ')', 5000);
                 $('p.progress').show();
                 return;
