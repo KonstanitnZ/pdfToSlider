@@ -16,15 +16,6 @@
     </head>
     <body>
         <div class="flex-center position-ref full-height">
-            @section('header')
-                @if (Route::has('login'))
-                    <div class="top-right links">
-                        <a href="{{ url('/login') }}">Залогироваться</a>
-                        <a href="{{ url('/register') }}">Регистрация</a>
-                    </div>
-                @endif
-            @endsection
-
             @yield('header')
 
             <div class="content">

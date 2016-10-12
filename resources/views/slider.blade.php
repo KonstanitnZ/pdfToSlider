@@ -10,26 +10,28 @@
 @endsection
 
 @section('content')
-    @if ( !empty($zipError) )
+    @if (!empty($zipError))
         <p class="error">{{ $zipError }}</p>
     @endif
-    @if (!empty($status))
-        <p> Архив должен был начать скачиваться, елси этого не произошло щелкните <a href=''>сюда</a></p>
+    @if (!empty($error))
+        <p class="error">{{ $error }}</p>
+        <p><a href="/">Перейти на главную</a></p>
+    @else
+        <div class="slider_container">
+            <ul class="bxslider">
+                @foreach($images as $image)
+                    <li><img src="{{ asset($image) }}"/></li>
+                @endforeach
+            </ul>
+        </div>
+        <div class='downloadAndTestApiButtons'>
+            <a href="/download/{{ $sliderPrefix }}">Скачать</a>
+            <a href="/api/{{ $sliderPrefix }}" id='testApi'>Протестировать API</a>
+        </div>
+        <div id="apiAnswer">
+        <p>Ссылка API для получения кратинок (требуется AJAX): {{ action('SliderController@getImagesApi', ['sliderPrefix' => $sliderPrefix]) }}</p>
+        </div>
     @endif
-    <div class="slider_container">
-        <ul class="bxslider">
-            @foreach($images as $image)
-                <li><img src="{{ asset($image) }}"/></li>
-            @endforeach
-        </ul>
-    </div>
-    <div class='downloadAndTestApiButtons'>
-        <a href="/download/{{ $sliderPrefix }}">Скачать</a>
-        <a href="/api/{{ $sliderPrefix }}" id='testApi'>Протестировать API</a>
-    </div>
-    <div id="apiAnswer">
-    <p>Ссылка API для получения кратинок (требуется AJAX): {{ action('SliderController@getImagesApi', ['sliderPrefix' => $sliderPrefix]) }}</p>
-    </div>
 @endsection
 
 @section('footer-scripts')

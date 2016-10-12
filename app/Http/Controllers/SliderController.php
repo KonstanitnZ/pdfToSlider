@@ -9,11 +9,15 @@ use App\Http\Requests;
 
 class SliderController extends Controller
 {
+	// function for showing chosen slider
     public function showTemporalySlider($sliderPrefix) {
 
-        $urlForImages = public_path() . '/sliders/temporaly/slider_' . $sliderPrefix . '/download/img/';
         $sliderRootFolder = public_path() . '/sliders/temporaly/slider_' . $sliderPrefix;
+        $urlForImages = $sliderRootFolder . '/download/img/';     
     	$folderForZipping = $sliderRootFolder. '/download';
+
+    	// have no slider? - let's talk about it
+    	if (!File::exists($sliderRootFolder)) return view('slider')->with('error', 'Такого слайдера не существует');
 
     	$images = File::files($urlForImages);
 
@@ -42,23 +46,25 @@ class SliderController extends Controller
 
     // download slider as .zip
     public function downloadSlider($sliderPrefix) {
-    	$sliderRootFolder = public_path() . '/sliders/temporaly/slider_' . $sliderPrefix;    	
 
+    	$sliderRootFolder = public_path() . '/sliders/temporaly/slider_' . $sliderPrefix;    	
     	$zip = $sliderRootFolder . '/slider.zip';
     	if (File::exists($zip)) {
     		return response()->download($zip);
     	} else return back()->with('zipError', 'Не удалось создать файл архива');
     }
 
+    // API function return list of slider image's links
     public function getImagesApi($sliderPrefix) {
     	$urlForImages = public_path() . '/sliders/temporaly/slider_' . $sliderPrefix . '/download/img/';
+
+    	if(!File::exists($urlForImages)) return response()->json(['error' => 'Слайдера не существует']);
 
     	$images = File::files($urlForImages);
 
     	if ($images) {
 	        foreach ($images as $image) {
 	            $fileinfo = pathinfo($image);
-	            $fileNames[] = $fileinfo['basename'];
 	            $imagesUrls[] = asset('/sliders/temporaly/slider_' . $sliderPrefix . '/download/img/' . $fileinfo['basename']);
 	        };
 	    };
