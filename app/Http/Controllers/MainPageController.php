@@ -20,14 +20,15 @@ class MainPageController extends Controller
         if ($request->pdf->isValid()) {
             // 'sliderPrefix' is used for showing progress in browser and make folder for slider
             $prefix = $request->sliderPrefix;
-            $folderName = 'slider_' . $request->sliderPrefix;
+            $folderName = 'slider_' . $prefix;
             $sliderRootDir = 'temporaly/' . $folderName;
             $urlForPdf = public_path() . '/sliders/' . $sliderRootDir . '/slider.pdf';
-            $urlForImages = public_path() . '/sliders/temporaly/' . $folderName . '/download/img/';
+            $urlForImages = public_path() . '/sliders/' . $sliderRootDir . '/download/img/';
 
+            // make folder for slider
             Storage::disk('sliders')->makeDirectory($sliderRootDir, 0777); 
             
-            // copy slider repo for downloading
+            // copy empty slider for downloading
             File::copyDirectory(public_path() . '/sliders/slider_repo', public_path() . '/sliders/' . $sliderRootDir . '/download');
 
             // inform that working in progress
@@ -36,19 +37,22 @@ class MainPageController extends Controller
 
             // save original pdf file
             $request->pdf->storeAs('temporaly/' . $folderName, 'slider.pdf' , 'sliders');
-           
-            $pdf = app('Pdf', ['pathToFile' => $urlForPdf]); // create images from pdf
+            
+            // create images from pdf
+            $pdf = app('Pdf', ['pathToFile' => $urlForPdf]);
             $numberOfPages = $pdf->getNumberOfPages();
 
-            // max 20 pages
-            $numberOfPages = ($numberOfPages >= 10) ? 10 : $numberOfPages;            
-            // save all pages as .jpg files
+            // max 10 pages
+            $numberOfPages = ($numberOfPages >= 10) ? 10 : $numberOfPages; 
+
+            // save pages as .jpg files
             for ($i=1; $i<=$numberOfPages; $i++)  {
-                // data for progress in browser
+
+                // progress information for browser
                 $content = 'Обрабатывается ' . $i . ' страница из ' . $numberOfPages;
                 Storage::disk('sliders')->put($progressFileUrl, $content);
 
-               $pdf->setPage($i)
+                $pdf->setPage($i)
                     ->saveImage($urlForImages . $i . '.jpg');
             };
 
